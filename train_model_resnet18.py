@@ -27,6 +27,7 @@ resnet = models.resnet18(pretrained=True)
 for param in resnet.parameters():
     param.requires_grad = False
 
+
 # Replace the classifier
 resnet.fc = nn.Sequential(
     nn.Linear(resnet.fc.in_features, 128),
