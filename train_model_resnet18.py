@@ -32,7 +32,7 @@ for param in resnet.parameters():
 resnet.fc = nn.Sequential(
     nn.Linear(resnet.fc.in_features, 128),
     nn.ReLU(),
-    nn.Dropout(0.4),
+    nn.Dropout(0.52),
     nn.Linear(128, 1),
     nn.Sigmoid()
 )
@@ -42,10 +42,10 @@ resnet = resnet.to(device)
 
 
 criterion = nn.BCELoss()
-optimizer = optim.Adam(resnet.fc.parameters(), lr=0.001)
+optimizer = optim.Adam(resnet.fc.parameters(), lr=0.0025)
 
 
-num_epochs = 20
+num_epochs = 17
 
 for epoch in range(num_epochs):
     resnet.train()
@@ -77,4 +77,4 @@ with torch.no_grad():
         correct += (preds == labels).sum().item()
         total += labels.size(0)
 
-print(f"Validation Accuracy: {100 * correct / total:.2f}%")
+print(f"Validation Accuracy: {100 * correct / total:.4f}%")
