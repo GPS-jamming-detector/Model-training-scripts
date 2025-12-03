@@ -33,7 +33,7 @@ for param in resnet.parameters():
 resnet.fc = nn.Sequential(
     nn.Linear(resnet.fc.in_features, 128),
     nn.ReLU(),
-    nn.Dropout(0.52),
+    nn.Dropout(0.15),
     nn.Linear(128, 1),
     nn.Sigmoid()
 )
@@ -43,7 +43,7 @@ resnet = resnet.to(device)
 
 
 criterion = nn.BCELoss()
-optimizer = optim.Adam(resnet.fc.parameters(), lr=0.0001)
+optimizer = optim.Adam(resnet.fc.parameters(), lr=0.00015)
 
 
 num_epochs = 30
@@ -156,4 +156,39 @@ print(f"{'='*60}")
 print(f"Final Training Accuracy: {train_accuracies[-1]:.2f}%")
 print(f"Final Validation Accuracy: {val_accuracies[-1]:.2f}%")
 print(f"Best Validation Accuracy: {max(val_accuracies):.2f}% (Epoch {val_accuracies.index(max(val_accuracies)) + 1})")
+print(f"{'='*60}")
+
+# Save the trained model
+model_save_path = 'resnet18_jamming_detector.pth'
+torch.save({
+    'model_state_dict': resnet.state_dict(),
+    'model': resnet,  # Save full model for easier loading
+    'num_epochs': num_epochs,
+    'train_losses': train_losses,
+    'train_accuracies': train_accuracies,
+    'val_losses': val_losses,
+    'val_accuracies': val_accuracies,
+    'final_train_accuracy': train_accuracies[-1],
+    'final_val_accuracy': val_accuracies[-1],
+    'best_val_accuracy': max(val_accuracies),
+    'best_epoch': val_accuracies.index(max(val_accuracies)) + 1,
+    'model_architecture': {
+        'base': 'resnet18',
+        'classifier': str(resnet.fc),
+        'input_size': (224, 224),
+        'num_classes': 1
+    }
+}, model_save_path)
+
+print(f"\n{'='*60}")
+print("MODEL SAVED")
+print(f"{'='*60}")
+print(f"Model saved to: {model_save_path}")
+print(f"\nTo load the model later, use:")
+print(f"  checkpoint = torch.load('{model_save_path}')")
+print(f"  model = checkpoint['model']  # Load full model")
+print(f"  # OR")
+print(f"  model = models.resnet18(pretrained=True)")
+print(f"  model.fc = nn.Sequential(...)  # Recreate architecture")
+print(f"  model.load_state_dict(checkpoint['model_state_dict'])")
 print(f"{'='*60}")
