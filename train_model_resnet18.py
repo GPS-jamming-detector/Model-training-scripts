@@ -46,7 +46,7 @@ criterion = nn.BCELoss()
 optimizer = optim.Adam(resnet.fc.parameters(), lr=0.00015)
 
 
-num_epochs = 30
+num_epochs = 40
 
 # Lists to track metrics over epochs
 train_losses = []
